@@ -61,15 +61,31 @@ public class SelectionProblem {
 
     public static void main(String[] args) {
         Random random = new Random();
-        int[] array = new int[random.nextInt(1024) + 16];
+        int[] array = new int[4096];
         for (int i = 0; i < array.length; i++) {
             array[i] = Math.abs(random.nextInt()) + 1;
         }
-        System.out.println(Arrays.toString(array));
-
         SelectionProblem selectionProblem = new SelectionProblem();
 
-        System.out.println(selectionProblem.bubbleSort(array, 16));
-        System.out.println(selectionProblem.selectionSort(array, 16));
+        long startTime1 = System.currentTimeMillis();
+        int answer1 = selectionProblem.bubbleSort(array, 1024);
+        long stopTime1 = System.currentTimeMillis();
+
+        long startTime2 = System.currentTimeMillis();
+        int answer2 = selectionProblem.selectionSort(array, 1024);
+        long stopTime2 = System.currentTimeMillis();
+
+        System.out.println("bubbleSort Used Time = " + (stopTime1 - startTime1) + " answer = " + answer1);
+        System.out.println("selectionSort Used Time = " + (stopTime2 - startTime2) + " answer = " + answer2);
+
+        /**
+         * bubbleSort Used Time = 48 answer = 1609269316
+         * selectionSort Used Time = 2 answer = 1609269316
+         * 可以看出在这个第K大的数问题里面，选择排序的效率是要优于冒泡排序的，这是因为选择排序利用了K这个数字
+         * 把需要排序的数组的大小由array.length缩小到了K，同时还减少了一部分不必要的计算。
+         *
+         * 在许多问题当中，一个重要的观念是：写出一个工作程序并不够。如果这个程序在巨大的数据集上运行，那么运行时间就成了重要的问题。
+         *
+         */
     }
 }
