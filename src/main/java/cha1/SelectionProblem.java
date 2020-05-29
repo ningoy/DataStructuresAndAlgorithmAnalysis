@@ -61,22 +61,26 @@ public class SelectionProblem {
 
     public static void main(String[] args) {
         Random random = new Random();
-        int[] array = new int[4096];
-        for (int i = 0; i < array.length; i++) {
-            array[i] = Math.abs(random.nextInt()) + 1;
+        for (int j = 1; j <= 20; j++) {
+            int n = 1000  * j;
+            int[] array = new int[n];
+            for (int i = 0; i < array.length; i++) {
+                array[i] = Math.abs(random.nextInt()) + 1;
+            }
+            SelectionProblem selectionProblem = new SelectionProblem();
+
+            long startTime1 = System.currentTimeMillis();
+            int answer1 = selectionProblem.bubbleSort(array, n / 2);
+            long stopTime1 = System.currentTimeMillis();
+
+            long startTime2 = System.currentTimeMillis();
+            int answer2 = selectionProblem.selectionSort(array, n / 2);
+            long stopTime2 = System.currentTimeMillis();
+
+            System.out.println("n => " + n);
+            System.out.println("bubbleSort Used Time = " + (stopTime1 - startTime1) + " answer = " + answer1);
+            System.out.println("selectionSort Used Time = " + (stopTime2 - startTime2) + " answer = " + answer2);
         }
-        SelectionProblem selectionProblem = new SelectionProblem();
-
-        long startTime1 = System.currentTimeMillis();
-        int answer1 = selectionProblem.bubbleSort(array, 1024);
-        long stopTime1 = System.currentTimeMillis();
-
-        long startTime2 = System.currentTimeMillis();
-        int answer2 = selectionProblem.selectionSort(array, 1024);
-        long stopTime2 = System.currentTimeMillis();
-
-        System.out.println("bubbleSort Used Time = " + (stopTime1 - startTime1) + " answer = " + answer1);
-        System.out.println("selectionSort Used Time = " + (stopTime2 - startTime2) + " answer = " + answer2);
 
         /**
          * bubbleSort Used Time = 48 answer = 1609269316
