@@ -1,50 +1,55 @@
 package cha3;
 
+import java.util.ConcurrentModificationException;
 import java.util.Iterator;
-import java.util.LinkedList;
+import java.util.NoSuchElementException;
 
-/**
- * @author ningoy
- * @version V1.0
- * @Package cha3
- * @Description: TODO
- * @date 2020/7/2 15:19
- */
 public class MyLinkedList<AnyType> implements Iterable<AnyType> {
 
     private int theSize;
+
     private int modCount = 0;
+
     private Node<AnyType> beginMarker;
+
     private Node<AnyType> endMarker;
 
+    /**
+     * Returns an iterator over elements of type {@code T}.
+     *
+     * @return an Iterator.
+     */
+    @Override
+    public Iterator<AnyType> iterator() {
+        return null;
+    }
+
     private static class Node<AnyType> {
-        /**
-         * @param d data
-         * @param p prev
-         * @param n next
-         */
+
+        public AnyType data;
+
+        public Node<AnyType> prev;
+
+        public Node<AnyType> next;
+
         public Node(AnyType d, Node<AnyType> p, Node<AnyType> n) {
             data = d;
             prev = p;
             next = n;
         }
-
-        public AnyType data;
-        public Node<AnyType> prev;
-        public Node<AnyType> next;
     }
 
-    public void clear() {
-        doClear();
-    }
-
-    private void doClear() {
+    public void doClear() {
         beginMarker = new Node<AnyType>(null, null, null);
         endMarker = new Node<AnyType>(null, beginMarker, null);
         beginMarker.next = endMarker;
 
         theSize = 0;
         modCount++;
+    }
+
+    public void clear() {
+        doClear();
     }
 
     public int size() {
@@ -114,20 +119,14 @@ public class MyLinkedList<AnyType> implements Iterable<AnyType> {
             }
         } else {
             p = endMarker;
-            for (int i = size(); i > idx; i--) {
-                p = p.prev;
+            for (int i = 0; i < idx; i++) {
+                p = p.next;
             }
         }
-
         return p;
     }
 
-    @Override
-    public java.util.Iterator<AnyType> iterator() {
-        return new LinkedListIterator();
-    }
-
-    private class LinkedListIterator implements java.util.Iterator<AnyType> {
+    private class LinkedListIterator implements Iterator<AnyType> {
         private Node<AnyType> current = beginMarker.next;
         private int expectedModCount = modCount;
         private boolean okToRemove = false;
@@ -139,12 +138,11 @@ public class MyLinkedList<AnyType> implements Iterable<AnyType> {
 
         @Override
         public AnyType next() {
-
             if (modCount != expectedModCount) {
-                throw new java.util.ConcurrentModificationException();
+                throw new ConcurrentModificationException();
             }
             if (!hasNext()) {
-                throw new java.util.NoSuchElementException();
+                throw new NoSuchElementException();
             }
 
             AnyType nextItem = current.data;
@@ -156,17 +154,16 @@ public class MyLinkedList<AnyType> implements Iterable<AnyType> {
         @Override
         public void remove() {
             if (modCount != expectedModCount) {
-                throw new java.util.ConcurrentModificationException();
+                throw new ConcurrentModificationException();
             }
             if (!okToRemove) {
                 throw new IllegalStateException();
             }
-
             MyLinkedList.this.remove(current.prev);
             expectedModCount++;
             okToRemove = false;
         }
-
     }
+
 
 }
