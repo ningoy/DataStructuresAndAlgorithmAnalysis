@@ -21,7 +21,7 @@ public class MyLinkedList<AnyType> implements Iterable<AnyType> {
      */
     @Override
     public Iterator<AnyType> iterator() {
-        return null;
+        return new LinkedListIterator();
     }
 
     private static class Node<AnyType> {
@@ -37,6 +37,10 @@ public class MyLinkedList<AnyType> implements Iterable<AnyType> {
             prev = p;
             next = n;
         }
+    }
+
+    public MyLinkedList() {
+        doClear();
     }
 
     public void doClear() {
@@ -120,7 +124,7 @@ public class MyLinkedList<AnyType> implements Iterable<AnyType> {
         } else {
             p = endMarker;
             for (int i = 0; i < idx; i++) {
-                p = p.next;
+                p = p.prev;
             }
         }
         return p;
@@ -163,6 +167,50 @@ public class MyLinkedList<AnyType> implements Iterable<AnyType> {
             expectedModCount++;
             okToRemove = false;
         }
+    }
+
+    /**
+     * 双链表 只调整链来交换两个相邻的元素
+     * null <- prev <- [null] -> next -> [data1] -> next -> [data2] -> next -> [null] -> next -> null
+     * prev <-            prev <-            prev <-
+     *
+     * @param idx
+     * @return
+     */
+    public boolean exchangeNearest(int idx) {
+        /**
+         * 默认交换idx节点 和 idx + 1 节点
+         * 因为需要对 idx <= size() - 2 做判断
+         */
+        if (idx < 0 || idx > size() - 2) {
+            throw new IndexOutOfBoundsException();
+        }
+        // 拿到idx节点
+        Node<AnyType> p = getNode(idx);
+        p.prev.next = p.next;
+        p.next.next.prev = p;
+        p.next.prev = p.prev;
+        p.next.next = p;
+        p.prev = p.next;
+        p.next = p.next.next;
+        return true;
+    }
+
+    public static void main(String[] args) {
+        String hello = "Hello world!";
+        System.out.println(hello);
+        MyLinkedList myLinkedList1 = new MyLinkedList();
+        myLinkedList1.add(0, 1);
+        myLinkedList1.add(0, 2);
+        myLinkedList1.add(0, 3);
+        myLinkedList1.add(0, 4);
+        myLinkedList1.add(0, 5);
+
+        Iterator iterator = myLinkedList1.iterator();
+        while (iterator.hasNext()) {
+            System.out.println(iterator.next());
+        }
+
     }
 
 
